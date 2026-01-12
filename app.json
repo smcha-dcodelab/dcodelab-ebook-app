@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "community-dev",
-    "slug": "community-dev",
+    "name": "dcodelab-ebook-app",
+    "slug": "dcodelab-ebook-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "communitydev",
+    "scheme": "dcodelabebookapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -38,7 +38,9 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-secure-store",
+      "expo-image-picker"
     ],
     "experiments": {
       "typedRoutes": true,

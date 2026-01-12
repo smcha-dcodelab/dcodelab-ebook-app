@@ -1,24 +1,51 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import queryClient from "@/api/queryClient";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import "react-native-reanimated";
+import Toast from "react-native-toast-message";
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    "Pretendard-Regular": require("../assets/fonts/pretendard/Pretendard-Regular.otf"),
+    "Pretendard-Medium": require("../assets/fonts/pretendard/Pretendard-Medium.otf"),
+    "Pretendard-SemiBold": require("../assets/fonts/pretendard/Pretendard-SemiBold.otf"),
+    "Pretendard-Bold": require("../assets/fonts/pretendard/Pretendard-Bold.otf"),
+    "NotoSans-SemiBoldItalic": require("../assets/fonts/notosans/NotoSans-SemiBoldItalic.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <ActionSheetProvider>
+      <QueryClientProvider client={queryClient}>
+        <RootNavigator />
+        <Toast />
+      </QueryClientProvider>
+    </ActionSheetProvider>
+  );
+}
+
+function RootNavigator() {
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="auth" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }
