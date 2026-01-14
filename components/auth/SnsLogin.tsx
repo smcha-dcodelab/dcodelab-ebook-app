@@ -1,6 +1,7 @@
 import { GlobalStyles } from "@/constants";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import GoogleSignInButton from "./GoogleSignInButton";
 
 interface SnsLoginButtonProps {
   /** 버튼 텍스트 */
@@ -120,6 +121,9 @@ const SnsLogin = ({ showMessage = true, showLogo = false }: SnsLoginProps) => {
             iconSource={require("@/assets/icons/login/naver.png")}
             onPress={handleNaverLogin}
           />
+          <View style={styles.buttonContainer}>
+            <GoogleSignInButton />
+          </View>
         </View>
       </View>
     </View>
@@ -189,6 +193,9 @@ const styles = StyleSheet.create({
     height: 30,
     position: "absolute",
     left: 13,
+  },
+  buttonContainer: {
+    marginBottom: 24,
   },
 });
 

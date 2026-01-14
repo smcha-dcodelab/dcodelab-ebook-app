@@ -1,44 +1,38 @@
 import { GlobalStyles } from "@/constants";
-import { getSecureStore } from "@/utils/secureStore";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyScreen() {
+  // useAuth에서 Supabase 세션 기반 인증 상태 관리
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    // 로그인 상태 확인
-    const checkAuth = async () => {
-      const token = await getSecureStore("token");
-      setIsLoggedIn(!!token);
-    };
-
-    checkAuth();
-  }, []);
+  // 로딩 중
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4285F4" />
+      </View>
+    );
+  }
 
   const handleLoginPress = () => {
     router.push("/auth");
   };
 
-  if (isLoggedIn === null) {
-    // 로딩 중
-    return (
-      <SafeAreaView style={styles.container}>
-        <View>
-          <Text>홈</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <Text>홈</Text>
-        {!isLoggedIn && (
+        {!isAuthenticated && (
           <Pressable onPress={handleLoginPress} style={styles.loginButton}>
             <Text style={styles.loginButtonText}>로그인 이동</Text>
           </Pressable>
@@ -64,5 +58,11 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
 });
