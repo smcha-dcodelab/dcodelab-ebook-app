@@ -12,7 +12,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MyScreen() {
-  const { user, isAuthenticated, isLoading, signOut } = useAuth();
+  const { user, isAuthenticated, isLoading, signOut, deleteAccount } =
+    useAuth();
   const router = useRouter();
 
   // 인증 상태 변경 시 리다이렉트
@@ -22,6 +23,8 @@ export default function MyScreen() {
       router.replace("/auth?from=my");
     }
   }, [isLoading, isAuthenticated, router]);
+
+  console.log("user : ", user);
 
   // 로딩 중
   if (isLoading) {
@@ -54,6 +57,28 @@ export default function MyScreen() {
     ]);
   };
 
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "구독 해지(탈퇴)",
+      "정말 탈퇴하시겠습니까?\n\n탈퇴 시 모든 데이터가 삭제되며, 복구할 수 없습니다.",
+      [
+        { text: "취소", style: "cancel" },
+        {
+          text: "탈퇴",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteAccount();
+              Alert.alert("알림", "탈퇴가 완료되었습니다.");
+            } catch (error: any) {
+              Alert.alert("오류", error.message);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
@@ -67,8 +92,14 @@ export default function MyScreen() {
 
         <View style={styles.infoCard}>
           <Text style={styles.infoTitle}>계정 정보</Text>
-          <InfoRow label="Provider" value="Google" />
-          <InfoRow label="User ID" value={user?.id?.slice(0, 8) + "..."} />
+          <InfoRow
+            label="Provider"
+            value={user?.app_metadata?.provider || "N/A"}
+          />
+          <InfoRow
+            label="User ID"
+            value={(user?.id?.slice(0, 8) || "") + "..."}
+          />
           <InfoRow
             label="가입일"
             value={new Date(user?.created_at || "").toLocaleDateString("ko-KR")}
@@ -77,6 +108,13 @@ export default function MyScreen() {
 
         <Pressable style={styles.signOutButton} onPress={handleSignOut}>
           <Text style={styles.signOutText}>로그아웃</Text>
+        </Pressable>
+
+        <Pressable
+          style={styles.deleteAccountButton}
+          onPress={handleDeleteAccount}
+        >
+          <Text style={styles.deleteAccountText}>구독 해지(탈퇴)</Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -166,6 +204,20 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+  },
+  deleteAccountButton: {
+    backgroundColor: "transparent",
+    borderWidth: 1,
+    borderColor: "#999",
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  deleteAccountText: {
+    color: "#666",
+    fontSize: 16,
+    fontWeight: "500",
   },
   loadingContainer: {
     flex: 1,

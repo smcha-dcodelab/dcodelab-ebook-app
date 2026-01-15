@@ -63,6 +63,34 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             "com.googleusercontent.apps.587325555454-rlkfdl0ic2u2kl4skms1t369iqg5gq0f",
         },
       ],
+      [
+        "expo-build-properties",
+        {
+          android: {
+            extraMavenRepos: [
+              "https://devrepo.kakao.com/nexus/content/groups/public/",
+            ],
+            newArchEnabled: true,
+          },
+          ios: {
+            newArchEnabled: true,
+          },
+        },
+      ],
+      [
+        "@react-native-kakao/core",
+        {
+          nativeAppKey:
+            process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY ||
+            "6f659a1afc41af00a8309d1bec38e903",
+          android: {
+            authCodeHandlerActivity: true,
+          },
+          ios: {
+            handleKakaoOpenUrl: true,
+          },
+        },
+      ],
     ],
     experiments: {
       typedRoutes: true,

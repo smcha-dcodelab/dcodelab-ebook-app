@@ -31,6 +31,7 @@ const GlobalStyles = {
     bgColor120: "#929292",
     bgColor130: "#FFF9E5",
     bgColor140: "#fee500",
+    bgColor150: "#03C75A",
   },
   text: {
     textColor10: "#fff",

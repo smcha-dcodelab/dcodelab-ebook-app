@@ -2,6 +2,7 @@ import { GlobalStyles } from "@/constants";
 import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import GoogleSignInButton from "./GoogleSignInButton";
+import KakaoLoginButton from "./KakaoLoginButton";
 
 interface SnsLoginButtonProps {
   /** 버튼 텍스트 */
@@ -100,30 +101,29 @@ const SnsLogin = ({ showMessage = true, showLogo = false }: SnsLoginProps) => {
       {/* SNS 로그인 버튼 영역 */}
       <View style={styles.loginButtonsContainer}>
         <View style={styles.loginButtons}>
-          <SnsLoginButton
+          <GoogleSignInButton
             label="구글로 로그인하기"
             backgroundColor={GlobalStyles.bg.bgColor100}
             textColor={GlobalStyles.text.textColor80}
             iconSource={require("@/assets/icons/login/google.png")}
             onPress={handleGoogleLogin}
+            showLogo={showLogo}
           />
-          <SnsLoginButton
+          <KakaoLoginButton
             label="카카오로 로그인하기"
             backgroundColor={GlobalStyles.bg.bgColor140}
             textColor={GlobalStyles.text.textColor80}
             iconSource={require("@/assets/icons/login/kakao.png")}
             onPress={handleKakaoLogin}
+            showLogo={showLogo}
           />
           <SnsLoginButton
             label="네이버로 로그인하기"
-            backgroundColor="#03C75A"
+            backgroundColor={GlobalStyles.bg.bgColor150}
             textColor={GlobalStyles.text.textColor10}
             iconSource={require("@/assets/icons/login/naver.png")}
             onPress={handleNaverLogin}
           />
-          <View style={styles.buttonContainer}>
-            <GoogleSignInButton />
-          </View>
         </View>
       </View>
     </View>

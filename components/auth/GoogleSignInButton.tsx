@@ -1,3 +1,4 @@
+import { GlobalStyles } from "@/constants";
 import { supabase } from "@/lib/supabase";
 import {
   GoogleSignin,
@@ -5,22 +6,45 @@ import {
   isSuccessResponse,
   statusCodes,
 } from "@react-native-google-signin/google-signin";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Image,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
 } from "react-native";
+
+interface SnsLoginButtonProps {
+  /** 버튼 텍스트 */
+  label: string;
+  /** 버튼 배경색 */
+  backgroundColor: string;
+  /** 텍스트 색상 */
+  textColor: string;
+  /** 아이콘 이미지 소스 */
+  iconSource: any;
+  /** 클릭 핸들러 */
+  onPress?: () => void;
+  /** 로고 표시 여부 (true면 로그인 후 이전 스택으로, false면 /my로 이동) */
+  showLogo?: boolean;
+}
 
 // 환경 변수에서 Client ID 가져오기
 const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
 const IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 
-export default function GoogleSignInButton() {
+export default function GoogleSignInButton({
+  label,
+  backgroundColor,
+  textColor,
+  iconSource,
+  onPress,
+  showLogo = false,
+}: SnsLoginButtonProps) {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -65,6 +89,16 @@ export default function GoogleSignInButton() {
         }
 
         console.log("로그인 성공:", data.user?.email);
+
+        // 로그인 성공 후 네비게이션 처리
+        // showLogo가 true면 이전 스택으로 이동, false면 /my로 이동
+        if (showLogo) {
+          // 이전 스택으로 이동
+          router.back();
+        } else {
+          // /my로 이동
+          router.replace("/my");
+        }
       }
     } catch (error: any) {
       handleSignInError(error);
@@ -99,63 +133,53 @@ export default function GoogleSignInButton() {
   };
 
   return (
-    <TouchableOpacity
-      style={styles.button}
+    <Pressable
+      style={[styles.loginButton, { backgroundColor }]}
       onPress={handleGoogleSignIn}
-      disabled={isLoading}
     >
       {isLoading ? (
-        <ActivityIndicator color="#fff" />
+        <ActivityIndicator color={GlobalStyles.bg.bgColor2} />
       ) : (
         <>
-          <GoogleIcon />
-          <Text style={styles.buttonText}>Google로 계속하기</Text>
+          <Text style={[styles.loginButtonText, { color: textColor }]}>
+            {label}
+          </Text>
+          {iconSource && (
+            <Image
+              source={iconSource}
+              style={styles.loginIcon}
+              resizeMode="cover"
+            />
+          )}
         </>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 
-// Google 아이콘 컴포넌트 (간단한 SVG 또는 이미지 사용 가능)
-const GoogleIcon = () => (
-  <View style={styles.iconContainer}>
-    <Text style={styles.iconText}>G</Text>
-  </View>
-);
-
 const styles = StyleSheet.create({
-  button: {
+  loginButton: {
+    gap: 10,
+    justifyContent: "center",
     flexDirection: "row",
+    borderRadius: 100,
+    height: 50,
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#4285F4",
-    borderRadius: 8,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    marginVertical: 10,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    alignSelf: "stretch",
+    position: "relative",
   },
-  buttonText: {
-    color: "#fff",
-    fontSize: 16,
+  loginButtonText: {
+    textAlign: "center",
     fontWeight: "600",
-    marginLeft: 12,
+    lineHeight: 17,
+    letterSpacing: -0.3,
+    fontSize: 14,
+    fontFamily: GlobalStyles.pretendard.semiBold,
   },
-  iconContainer: {
-    width: 24,
-    height: 24,
-    backgroundColor: "#fff",
-    borderRadius: 4,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  iconText: {
-    color: "#4285F4",
-    fontSize: 16,
-    fontWeight: "bold",
+  loginIcon: {
+    width: 30,
+    height: 30,
+    position: "absolute",
+    left: 13,
   },
 });
