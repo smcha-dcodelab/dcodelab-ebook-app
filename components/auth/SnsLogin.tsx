@@ -3,6 +3,7 @@ import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import GoogleSignInButton from "./GoogleSignInButton";
 import KakaoLoginButton from "./KakaoLoginButton";
+import NaverLoginButton from "./NaverLoginButton";
 
 interface SnsLoginButtonProps {
   /** 버튼 텍스트 */
@@ -71,10 +72,7 @@ const SnsLogin = ({ showMessage = true, showLogo = false }: SnsLoginProps) => {
     console.log("카카오 로그인");
   };
 
-  const handleNaverLogin = () => {
-    // TODO: 네이버 로그인 로직 구현
-    console.log("네이버 로그인");
-  };
+  // 네이버 로그인은 NaverLoginButton 컴포넌트에서 자체 처리됨
 
   return (
     <View style={styles.container}>
@@ -117,12 +115,12 @@ const SnsLogin = ({ showMessage = true, showLogo = false }: SnsLoginProps) => {
             onPress={handleKakaoLogin}
             showLogo={showLogo}
           />
-          <SnsLoginButton
+          <NaverLoginButton
             label="네이버로 로그인하기"
             backgroundColor={GlobalStyles.bg.bgColor150}
             textColor={GlobalStyles.text.textColor10}
             iconSource={require("@/assets/icons/login/naver.png")}
-            onPress={handleNaverLogin}
+            showLogo={showLogo}
           />
         </View>
       </View>

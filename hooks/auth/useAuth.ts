@@ -4,6 +4,7 @@ import {
   logout as kakaoLogout,
   unlink as kakaoUnlink,
 } from "@react-native-kakao/user";
+import NaverLogin from "@react-native-seoul/naver-login";
 import { Session, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { AppState } from "react-native";
@@ -141,6 +142,15 @@ export function useAuth() {
           // 카카오 로그아웃 실패해도 Supabase 로그아웃 진행
           console.log("카카오 로그아웃 스킵:", kakaoError);
         }
+      } else if (provider === "naver") {
+        // 네이버 로그아웃
+        try {
+          await NaverLogin.logout();
+          console.log("네이버 로그아웃 완료");
+        } catch (naverError) {
+          // 네이버 로그아웃 실패해도 Supabase 로그아웃 진행
+          console.log("네이버 로그아웃 스킵:", naverError);
+        }
       }
 
       // Supabase 로그아웃 (공통)
@@ -195,6 +205,15 @@ export function useAuth() {
         } catch (kakaoError) {
           console.log("카카오 연결 해제 실패:", kakaoError);
           // 카카오 연결 해제 실패해도 Supabase 처리 진행
+        }
+      } else if (provider === "naver") {
+        // 네이버 연결 해제 (deleteToken: 네이버 계정과의 연결 완전 해제)
+        try {
+          await NaverLogin.deleteToken();
+          console.log("네이버 연결 해제 완료");
+        } catch (naverError) {
+          console.log("네이버 연결 해제 실패:", naverError);
+          // 네이버 연결 해제 실패해도 Supabase 처리 진행
         }
       }
 

@@ -69,6 +69,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           android: {
             extraMavenRepos: [
               "https://devrepo.kakao.com/nexus/content/groups/public/",
+              "https://repository.map.naver.com/archive/maven", // 네이버 SDK Maven 저장소
             ],
             newArchEnabled: true,
           },
@@ -89,6 +90,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           ios: {
             handleKakaoOpenUrl: true,
           },
+        },
+      ],
+      // 네이버 로그인 플러그인
+      [
+        "@react-native-seoul/naver-login",
+        {
+          urlScheme: `naver${
+            process.env.EXPO_PUBLIC_NAVER_CLIENT_ID || "YOUR_NAVER_CLIENT_ID"
+          }`,
         },
       ],
     ],
